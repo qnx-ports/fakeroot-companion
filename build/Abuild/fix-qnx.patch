@@ -1,0 +1,61 @@
+diff --git a/communicate.c b/communicate.c
+index 292699d..dd32fac 100644
+--- a/communicate.c
++++ b/communicate.c
+@@ -32,6 +32,9 @@
+ # endif
+ #endif
+ 
++# ifdef __QNX__
++#define SOL_TCP 6
++# endif
+ #include "communicate.h"
+ #include <dlfcn.h>
+ #include <stdio.h>
+diff --git a/faked.c b/faked.c
+index d6e1b50..9bac8b5 100644
+--- a/faked.c
++++ b/faked.c
+@@ -103,6 +103,7 @@
+ #else /* FAKEROOT_FAKENET */
+ # include <sys/socket.h>
+ # include <sys/param.h>
++# include <sys/select.h>
+ # include <netinet/in.h>
+ # include <netinet/tcp.h>
+ # include <arpa/inet.h>
+@@ -1172,7 +1173,7 @@ void get_msg(const int listen_sd)
+       const int sd = sd_list_index(i);
+ 
+       FD_SET(sd, &readfds);
+-      maxfd = MAX(sd, maxfd);
++      maxfd = max(sd, maxfd);
+     }
+ 
+     count = select(maxfd + 1, &readfds, NULL, NULL, NULL);
+diff --git a/libfakeroot.c b/libfakeroot.c
+index e7b1e7c..ce3b42a 100644
+--- a/libfakeroot.c
++++ b/libfakeroot.c
+@@ -1127,7 +1127,7 @@ int WRAP_MKNOD MKNOD_ARG(int ver UNUSED,
+ }
+ 
+ #ifdef HAVE_FSTATAT
+-#ifdef HAVE_MKNODAT
++#ifdef NEVER_HAVE_MKNODAT
+ int WRAP_MKNODAT MKNODAT_ARG(int ver UNUSED,
+ 			     int dir_fd,
+ 			     const char *pathname,
+@@ -1505,12 +1505,6 @@ pid_t fork(void)
+   return pid;
+ }
+ 
+-pid_t vfork(void)
+-{
+-  /* We can't wrap vfork(2) without breaking everything... */
+-  return fork();
+-}
+-
+ /* Return an error when trying to close the comm_sd file descriptor
+    (pretend that it's closed). */
+ int close(int fd)

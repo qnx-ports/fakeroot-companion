@@ -1,0 +1,39 @@
+# Maintainer: Leo Shen <yishen@qnx.com>
+pkgname=fakeroot
+pkgver=1.37.1.1
+pkgrel=2
+pkgdesc="Tool for simulating superuser privileges"
+url="https://packages.debian.org/fakeroot"
+arch="all"
+license="GPL-3.0-or-later"
+subpackages="$pkgname-doc"
+depends="qnx-io-sock"
+makedepends="autoconf automake libtool qnx-io-sock-dev"
+source="https://deb.debian.org/debian/pool/main/f/fakeroot/fakeroot_$pkgver.orig.tar.gz
+    fix-chown.patch
+    fix-qnx.patch
+"
+
+prepare() {
+    default_prepare
+    ./bootstrap
+}
+
+build() {
+    ./configure \
+        --build="$CBUILD" \
+        --host="$CHOST" \
+        --prefix=/usr \
+        --disable-static \
+        --with-ipc=tcp
+    make
+}
+
+package() {
+    make DESTDIR="$pkgdir" install
+}
+sha512sums="
+768db08ea9fc6345aeb3604345cb45a6fc588053101fbd5e6f1c43cbf9e5e6fd787f189f0e8b04835ebdcce70935c2b32aa2501ba0079f9cb79c01ad8ad84c97  fakeroot_1.37.1.1.orig.tar.gz
+c32493c2c30bbfa8dcac0cab370d345ae95d47726b2d89360708cee156661d2bf431b3d1f23c5e98b47200cda18236e550ffb93b663483ebe9bc5a2c4319ae97  fix-chown.patch
+7b7132cc52aea49d4d2ceed42422aa9d2b8869b75b7a31de3bad5285c7638eb38152f866e2637d367a011c9a0794eaab91e7b0cb3701e56c3652a9b5d4fa01c9  fix-qnx.patch
+"

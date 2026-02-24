@@ -1,0 +1,53 @@
+diff --git a/libfakeroot.c b/libfakeroot.c
+index ce3b42a..08a3ea0 100644
+--- a/libfakeroot.c
++++ b/libfakeroot.c
+@@ -835,6 +835,10 @@ int chown(const char *path, uid_t owner, gid_t group){
+   INT_STRUCT_STAT st;
+   int r=0;
+ 
++  if(owner == 0 || group == 0)
++  {
++    return 0;
++  }
+ 
+ #ifdef LIBFAKEROOT_DEBUGGING
+   if (fakeroot_debug) {
+@@ -871,6 +875,11 @@ int lchown(const char *path, uid_t owner, gid_t group){
+   INT_STRUCT_STAT st;
+   int r=0;
+ 
++  if(owner == 0 || group == 0)
++  {
++    return 0;
++  }
++
+ #ifdef LIBFAKEROOT_DEBUGGING
+   if (fakeroot_debug) {
+     fprintf(stderr, "lchown path %s owner %d group %d\n", path, owner, group);
+@@ -897,6 +906,11 @@ int fchown(int fd, uid_t owner, gid_t group){
+   INT_STRUCT_STAT st;
+   int r;
+ 
++  if(owner == 0 || group == 0)
++  {
++    return 0;
++  }
++
+   r=INT_NEXT_FSTAT(fd, &st);
+   if(r)
+     return r;
+@@ -923,6 +937,12 @@ int fchownat(int dir_fd, const char *path, uid_t owner, gid_t group, int flags)
+   /* If AT_SYMLINK_NOFOLLOW is set in the fchownat call it should
+      be when we stat it. */
+   INT_STRUCT_STAT st;
++
++  if(owner == 0 || group == 0)
++  {
++    return 0;
++  }
++
+   r=INT_NEXT_FSTATAT(dir_fd, path, &st, (flags & (AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH | AT_NO_AUTOMOUNT)));
+ 
+   if(r)
+
