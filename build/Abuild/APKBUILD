@@ -1,7 +1,7 @@
 # Maintainer: Leo Shen <yishen@qnx.com>
 pkgname=fakeroot
 pkgver=1.37.1.1
-pkgrel=${pkgrel:-0}
+pkgrel=2
 pkgdesc="Tool for simulating superuser privileges"
 url="https://packages.debian.org/fakeroot"
 arch="all"
@@ -32,7 +32,6 @@ build() {
 package() {
     make DESTDIR="$pkgdir" install
 }
-options="$options ${DISABLE_CHECK:+!check}"
 sha512sums="
 768db08ea9fc6345aeb3604345cb45a6fc588053101fbd5e6f1c43cbf9e5e6fd787f189f0e8b04835ebdcce70935c2b32aa2501ba0079f9cb79c01ad8ad84c97  fakeroot_1.37.1.1.orig.tar.gz
 c32493c2c30bbfa8dcac0cab370d345ae95d47726b2d89360708cee156661d2bf431b3d1f23c5e98b47200cda18236e550ffb93b663483ebe9bc5a2c4319ae97  fix-chown.patch
